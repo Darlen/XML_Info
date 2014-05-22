@@ -8,4 +8,10 @@ package com.darlen.xml.parse;
  * Time: 下午2:18
  */
 public class XMLParse {
+
+	public static void main(String[] args) {
+		XMLParse xmlParse = new XMLParse();
+
+	}
+
 }

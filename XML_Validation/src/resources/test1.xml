@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<shiporder orderid="889923" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<shiporder orderid="889923" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ><!-- xsi:noNamespaceSchemaLocation="test1.xsd.xsd"-->
     <orderperson>George Bush</orderperson>
     <shipto>
         <name>John Adams</name>
@@ -17,6 +17,5 @@
         <title>Hide your heart</title>
         <quantity>1</quantity>
         <price>9.90</price>
-        <quantit>a</quantit>
     </item>
 </shiporder>

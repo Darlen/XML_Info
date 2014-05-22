@@ -1,4 +1,4 @@
-package com.darlen.xml.transfer;
+package com.darlen.xml.transfertobean;
 
 /**
  * 这个类主要用于XML与JSON/javabean之间的转换
