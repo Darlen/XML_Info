@@ -1,1 +1,5 @@
-This file was created by IntelliJ IDEA 12.1.6 for binding GitHub repository
+This file is used to operate XML document .
+The project main contents include as follows:
+1.validate the xml format by schema and dtd
+2.Read and parse XML .
+3.XML/JSON transfer to javabean（）
