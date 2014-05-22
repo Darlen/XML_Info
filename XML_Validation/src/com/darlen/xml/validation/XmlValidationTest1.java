@@ -24,103 +24,72 @@ public class XmlValidationTest1 {
 
 	public static void main(String[] args) throws Exception {
 		XmlValidationTest1 test1 = new XmlValidationTest1();
-		boolean isValid = test1.testXML("/resources/test1.xml","E:\\develop_workspace\\XML_Info\\XML_Validation\\src\\resources\\test1.xsd",1);//test1.validateXMLBySchema("/resources/test1.xml","E:\\develop_workspace\\XML_Info\\XML_Validation\\src\\resources\\test1.xsd");///resources/test1.xml
-		if(isValid){
-			System.out.println("The Xml is formatted successful.");
+		//这里的路劲有点问题，总是在流读取的时候说找不到，没办法，只能写绝对路径了
+		boolean isValid = test1.testXML("/resources/test1.xml", "E:\\develop_workspace\\XML_Info\\XML_Validation\\src\\resources\\test1.xsd", 1);
+		//test1.validateXMLBySchema("/resources/test1.xml","E:\\develop_workspace\\XML_Info\\XML_Validation\\src\\resources\\test1.xsd");///resources/test1.xml
+		if (isValid) {
+			System.out.println("The Xml is verified successful.");
 		} else {
-			System.out.println("The Xml can not been found.");
+			System.out.println("The Xml file has some error.");
 		}
 	}
 
-	 //xsi:noNamespaceSchemaLocation="XML_Validation/src/resources/test1.xsd"
 	/**
-	 *
-	 * @param xmlFile xml 文件路径
+	 * @param xmlFile        xml 文件路径
 	 * @param validationFile 校验文件路径
-	 * @param mode  校验类型
+	 * @param mode           校验类型
 	 * @return 校验是否成功
 	 */
-	public  boolean testXML(String xmlFile,String validationFile,int mode) throws Exception {
-		if(VALID_DTD == mode ) {
-			return validateXMLByDTD(xmlFile,validationFile);
-		}else if(VALID_XSD == mode ){
-			return validateXMLBySchema(xmlFile,validationFile);
+	public boolean testXML(String xmlFile, String validationFile, int mode) throws Exception {
+		if (VALID_DTD == mode) {
+			return validateXMLByDTD(xmlFile, validationFile);
+		} else if (VALID_XSD == mode) {
+			return validateXMLBySchema(xmlFile, validationFile);
 		}
 		return true;
 	}
 
 	/**
 	 * 利用dom4j通过dtd或者是schema验证XML
-	 * @param xmlFile 文件路径
+	 *
+	 * @param xmlFile        文件路径
 	 * @param validationFile 校验文件路径
 	 * @return
 	 * @throws Exception
 	 */
-	public  boolean validateXMLBySchema(String xmlFile,String validationFile) throws Exception {
+	public boolean validateXMLBySchema(String xmlFile, String validationFile) throws Exception {
 		SAXReader reader = new SAXReader(true);// 创建SAXReader对象并制定需要验证,也可通过reader.setValidation(true)来指定
 
-//		EntityResolver resolver = new EntityResolver() {
-//
-//			public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-//				InputStream in = null;
-//				try{
-//					in = new FileInputStream("E:\\develop_workspace\\XML_Info\\XML_Validation\\src\\resources\\test1.xsd");
-//				}catch (FileNotFoundException e) {
-//					logger.error("XSD can not find it.",e);
-//					//throw new RuntimeException(e);
-//				}
-//				return new InputSource(in);
-//			}
-//		};
-
-		InputStream fis = null ;
+		InputStream fis = null;
 		XMLErrorHandler errorHandler = new XMLErrorHandler();
-		try{
-			//reader.setEntityResolver(resolver);
+		try {
 			//setFeature:http://kickjava.com/src/com/sun/org/apache/xerces/internal/impl/Constants.java.htm
 			reader.setFeature("http://xml.org/sax/features/validation", true);// 设置功能标志的值name -功能名称，它是一个完全限定 URI。value - 请求的功能值（true 或false）。
 			reader.setFeature("http://apache.org/xml/features/validation/schema", true);
-			reader.setFeature("http://apache.org/xml/features/validation/schema-full-checking",true);
+			reader.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
 			// 设置属性的值 name - 属性名称，它是一个完全限定 URI。value - 请求的属性值
-			reader.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation",validationFile);
+			reader.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", validationFile);
 
 			reader.setErrorHandler(errorHandler);
-//			// Class.forName("com.darlen.xml.validation.XmlValidattionTest1").getResourceAsStream("/resources/test1.xml");
-//			fis =this.getClass().getResourceAsStream(filePath);
-//			if(fis != null){
-//				reader.read(fis);
-//				if(errorHandler.getErrors().hasContent()) {
-//					ByteArrayOutputStream out = new ByteArrayOutputStream();
-//					XMLWriter errorWriter = new XMLWriter(out, OutputFormat.createPrettyPrint());
-//					errorWriter.write(errorHandler.getErrors());
-//					String sErrorMsg = new String(out.toByteArray(), "UTF-8");
-//					System.out.println(sErrorMsg);
-//				}
-//			}else{
-//				return false;
-//			}
-			return validate(xmlFile,reader);
-		}finally {
-			if(fis != null) {
+			return validate(xmlFile, reader);
+		} finally {
+			if (fis != null) {
 				fis.close();
 			}
 		}
-
 	}
 
 	/**
 	 * 校验 dtd 的方法
 	 *
-	 * @param xmlFile
-	 *            xml文件路径
-	 * @param validationFile
-	 *            校验文件路径
+	 * @param xmlFile        xml文件路径
+	 * @param validationFile 校验文件路径
 	 * @return 校验是否成功
 	 */
-	private  boolean validateXMLByDTD(final String xmlFile,
-										final String validationFile) throws IOException {
+	private boolean validateXMLByDTD(final String xmlFile, final String validationFile) throws IOException {
+
         /*
-         * 此类实体包括在 DTD 内引用的外部 DTD
+		 * 此类实体包括在 DTD 内引用的外部 DTD
          * 子集和外部参数实体（无论哪种情形，仅在在解析器都读取外部参数实体时）和在文档元素内引用的外部通用实体（如果解析器读取外部通用实体）
          */
 		EntityResolver resolver = new EntityResolver() {// 应用程序解析外部实体
@@ -145,29 +114,28 @@ public class XmlValidationTest1 {
 	}
 
 	/**
-	 *
 	 * @param xmlFile xml文件路径
 	 * @param reader  SAXReader 对象
 	 * @return 校验是否成功
 	 */
-	private  boolean validate(final String xmlFile, final SAXReader reader) throws IOException {
+	private boolean validate(final String xmlFile, final SAXReader reader) throws IOException {
 		XMLErrorHandler errorHandle = new XMLErrorHandler();// 错误处理类实例
 		reader.setErrorHandler(errorHandle);// 向 XML 阅读器注册一个实例
 //		File file = new File(xmlFile);
 		InputStream is = null;
 //		if (file.exists() && file.isFile()) {
-			try {
-				is =this.getClass().getResourceAsStream(xmlFile);// 读取xml
-				//is =new FileInputStream(xmlFile);// 读取xml
-				InputStreamReader in = new InputStreamReader(is, "utf-8");
-				reader.read(in);
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-				return false;
-			} catch (DocumentException e) {
-				e.printStackTrace();
-				return false;
-			}
+		try {
+			is = this.getClass().getResourceAsStream(xmlFile);// 读取xml
+			//is =new FileInputStream(xmlFile);// 读取xml
+			InputStreamReader in = new InputStreamReader(is, "utf-8");
+			reader.read(in);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return false;
+		} catch (DocumentException e) {
+			e.printStackTrace();
+			return false;
+		}
 //		} else {
 //			return false;
 //		}
@@ -179,6 +147,7 @@ public class XmlValidationTest1 {
 			String sErrorMsg = new String(out.toByteArray(), "UTF-8");
 			System.out.println(sErrorMsg);
 		}
+
 		return true;
 	}
 }
